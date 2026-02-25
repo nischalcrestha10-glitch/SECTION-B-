@@ -1,0 +1,87 @@
+-- Create Database
+CREATE DATABASE COMPANYDB;
+
+-- Use Database
+USE COMPANYDB;
+
+-- Create DEPARTMENT Table
+CREATE TABLE DEPARTMENT (
+    DNAME VARCHAR(20),
+    DNUMBER INT PRIMARY KEY,
+    MGRSSN VARCHAR(15),
+    MGRSTARTDATE DATE
+);
+
+-- Create EMPLOYEE Table
+CREATE TABLE EMPLOYEE (
+    FNAME VARCHAR(20),
+    MINIT CHAR(1),
+    LNAME VARCHAR(15),
+    SSN VARCHAR(15) PRIMARY KEY,
+    BDATE DATE,
+    ADDRESS VARCHAR(100),
+    SEX CHAR(1),
+    SALARY INT,
+    SUPERSSN VARCHAR(15),
+    DNO INT,
+    FOREIGN KEY (DNO) REFERENCES DEPARTMENT(DNUMBER)
+);
+
+-- Insert Data into DEPARTMENT
+INSERT INTO DEPARTMENT (DNAME, DNUMBER, MGRSSN, MGRSTARTDATE) VALUES
+('HR', 1, '101', '2022-01-10'),
+('IT', 2, '102', '2021-03-15'),
+('SALES', 3, '103', '2020-07-20');
+
+-- Insert Data into EMPLOYEE
+INSERT INTO EMPLOYEE 
+(FNAME, MINIT, LNAME, SSN, BDATE, ADDRESS, SEX, SALARY, SUPERSSN, DNO) 
+VALUES
+('John', 'A', 'Smith', '101', '1990-05-15', 'New York', 'M', 50000, NULL, 1),
+('Emma', 'B', 'Johnson', '102', '1988-08-22', 'Chicago', 'F', 60000, '101', 2),
+('Michael', 'C', 'Brown', '103', '1992-11-10', 'Los Angeles', 'M', 55000, '102', 3),
+('Sophia', 'D', 'Davis', '104', '1995-02-18', 'Houston', 'F', 45000, '101', 1),
+('Daniel', 'E', 'Wilson', '105', '1993-09-25', 'Boston', 'M', 48000, '103', 2);
+
+-- View Tables
+SELECT * FROM DEPARTMENT;
+SELECT * FROM EMPLOYEE;
+#q1. 10% salary raise for resaerch department
+
+select E.FNAME,E.LNAME,
+E.SALARY *1.1 as increased_salary 
+from EMPLOYEE E 
+join DEPARTMENT D on E.DNO = D.DNUMBER 
+where D.DNAME='hr';
+
+#2 SALARY STATISTICS OF ACCOUNT DEPARTMENT 
+#SUM.MAX,MIN,AVG,FOR DEPARTMENT ADMINISTRATION
+select sum(E.SALARY) AS TOTAL,
+MAX(E.SALARY) as max,
+MIN(E.SALARY) as min,
+avg(E.SALARY) as average
+FROM EMPLOYEE E 
+join DEPARTMENT D on E.DNO = D.DNUMBER 
+where D.DNAME='Hr';
+
+
+#q3 Employee controlled by department no 2
+select FNAME,LNAME FROM EMPLOYEE E
+where e.DNO = 1;
+
+#Q4 DEPARTMENT HAVING AT LEAST 2 EMPLOYEE
+SELECT D.DNAME, COUNT(*) AS EMP_count
+FROM EMPLOYEE E
+JOIN DEPARTMENT D ON E.DNO = D.DNUMBER
+GROUP BY D.DNUMBER, D.DNAME
+HAVING COUNT(*) >= 2; 
+
+
+#Q5 EMPLOYEE BORN IN 1990'S(1990-1999)
+select * from EMPLOYEE  
+where year(BDATE) between 1955 and 1999;
+
+
+
+
+
